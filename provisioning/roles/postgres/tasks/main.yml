@@ -1,0 +1,40 @@
+---
+# See: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=863199 and
+# https://github.com/geerlingguy/ansible-role-java/issues/64
+- name: Ensure 'man' directory exists.
+  file:
+    path: /usr/share/man/man1
+    state: directory
+    recurse: true
+  when:
+    - ansible_distribution == 'Ubuntu'
+    - ansible_distribution_version == '18.04'
+
+- name: Ensure Java is installed.
+  apt:
+    name: "{{ java_packages }}"
+    state: present
+
+---
+# This is necessary to install the latest versions of Postgres
+# For details see https://wiki.postgresql.org/wiki/Apt
+
+- name: Add Postgres repo to sources list
+  apt_repository:
+    repo: 'deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main'
+    state: present
+  sudo: yes
+
+- name: Add key for Postgres repo
+  apt_key:
+    url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+    state: present
+  sudo: yes
+
+- name: install postgresql packages
+  sudo: yes
+  apt:
+    name: ["postgresql-{{ postgres_version }}","libpq-dev","postgresql-client-{{ postgres_version }}","postgresql-contrib-{{ postgres_version }}","libxslt-dev","libxml2-dev"]
+    state: present
+    update_cache: yes
+  tags: [packages]

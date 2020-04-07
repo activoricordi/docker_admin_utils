@@ -1,0 +1,40 @@
+# Maven task defaults
+---
+- name: Fetch latest release version of Kotlin.
+  uri:
+    url: https://api.github.com/repos/JetBrains/kotlin/releases/latest
+    body_format: json
+    return_content: true
+  register: json_response
+  tags:
+- name: Set graalvm_ce_version
+  set_fact:
+    graalvm_ce_version: "{{ _latest_release.json.tag_name[3:] }}"
+    when: graalvm_ce_version == "latest"
+
+# Kotlin release directory
+- name: Ensure Kotlin release directory exists
+  become: true
+  file:
+    path: /opt/kotlin-{{ json_response.json.name }}
+    state: directory
+# Download and unzip Kotlin version
+- name: Download and unzip latest Kotlin version.
+  become: true
+  unarchive:
+    src: "{{ json_response.json.assets.0.browser_download_url }}"
+    dest: /opt/kotlin-{{ json_response.json.name }}
+    remote_src: true
+- name: Create Kotlin symlinks
+  file:
+    src: /opt/kotlin-{{ json_response.json.name }}/kotlinc/bin/{{ item.src }}
+    dest: /usr/local/bin/{{ item.dest }}
+    state: link
+    force: true
+  with_items:
+    - { src: 'kotlin', dest: 'kotlin' }
+    - { src: 'kotlinc', dest: 'kotlinc' }
+    - { src: 'kotlinc-js', dest: 'kotlinc-js' }
+    - { src: 'kotlinc-jvm', dest: 'kotlinc-jvm' }
+    - { src: 'kotlin-compiler', dest: 'kotlin-compiler' }
+    - { src: 'kotlin-dce-js', dest: 'kotlin-dce-js' }

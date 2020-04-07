@@ -1,0 +1,194 @@
+---
+# Install Python 3.3
+- name: Install Python 3.6
+  apt:
+      name: python3.6
+      state: present
+      update_cache: yes
+
+- name: Install pip3
+  apt:
+    name: python3-pip
+    state: present
+    update_cache: yes
+
+# Install required packages for data science
+- name: Install required packages for data science
+  sudo: yes
+  apt:
+    name: ["python-scipy", "libblas-dev","liblapack-dev","gfortran","libffi-dev","pkg-config","libfreetype6-dev","libpng-dev","pandoc","texlive-xetex","gcc","g++","python3-virtualenv","python3-venv"]
+    state: latest
+
+# - name: Install 'virtualenv' package
+#   pip:
+#     name: virtualenv
+#     executable: pip3
+#   sudo: yes
+
+# Create and activate new environment packages required for the data science
+# Install packages required for the data science
+# Pending to evaluate
+# patsy - https://patsy.readthedocs.io/en/latest/
+# statsmodels - https://www.statsmodels.org/stable/index.html
+# Tensorflow
+- name: Create virtualenv Environment
+  pip:
+    name: [
+      "beautifulsoup4",
+      "ipython",
+      "cython",
+      "tornado",
+      "networkx",
+      "gensim",
+      "numexpr",
+      "bottleneck",
+      "sqlalchemy",
+      "seaborn",
+      "Jinja2",
+      "jsonschema",
+      "awscli",
+      "boto3",
+      "botocore",
+      "graphviz",
+      "h5py",
+      "jmespath",
+      "marathon",
+      "mmh",
+      "mpmath",
+      "pexpect",
+      "ptyprocess",
+      "pyenchant",
+      "python-crfsuite",
+      "quiver",
+      "rabbitpy",
+      "redis",
+      "requests",
+      "s3transfer",
+
+]
+    virtualenv: "/home/vagrant/venv"
+    # requirements: "/vagrant/requirements.txt"
+    virtualenv_command: /usr/bin/python3 -m venv
+    virtualenv_site_packages: no
+    state: present
+  sudo: yes
+
+- name: virtualenv activate
+  shell: source ~/venv/bin/activate
+
+## Install Artifical Intelligence
+- name: Install Artifical Intelligence libraries
+  pip:
+    name: [
+      "pandas", # Data Frames Machine Learning
+      "numpy", # Numerical Functions Machine Learning
+      "scipy", # Numerical Functions Machine Learning
+      "scikit-learn", # Machine Learning Functions
+      "spacy", # Natural Language Processing
+      "bokeh", # Data Visualization
+      "matplotlib", #Data Visualization
+      "dash", # Data Visualization
+      "keras",
+      "biopython",
+      "opencv-python",
+      "keras-adversarial",
+      "keras-vis",
+      "pyspark",
+      "fastai",
+      "psycopg2",
+      "nltk",
+      "scikit-image",
+      "sklearn-crfsuite",
+      "sklearn-pandas",
+      "tensorboard",
+      "tensorflow",
+      "tensorflow-hub"
+    ]
+
+
+## Install JupyterLab
+- name: Install JupyterLab and its extensions
+  pip:
+    name: [
+      "jupyterlab",
+      "jupyterlab-quickopen",
+      "ipywidgets",
+      "qgrid",
+      "ipysheet",
+      "iplantuml",
+      "jupyterlab_templates",
+      "nbconvert",
+      "jupytext",
+      "voila",
+      "jupyter_contrib_nbextensions",
+      "jupyter_nbextensions_configurator",
+      "ansible-jupyter-widgets", # Ansible Jupyter Widgets
+      "ansible-kernel", # Ansible Kernel
+    ]
+
+## Install Jupyterlab extensions
+- name: Install jupyterlab extensions
+  shell: |
+          jupyter nbextensions_configurator enable --user
+          jupyter labextension install @parente/jupyterlab-quickopen
+          jupyter labextension install @jupyterlab/toc
+          # Install widgets extension
+          jupyter nbextension enable --py --sys-prefix widgetsnbextension  # can be skipped for notebook version 5.3 and above
+          jupyter labextension install jupyterlab_templates
+          jupyter serverextension enable --py jupyterlab_templates
+          jupyter labextension install @jupyter-voila/jupyterlab-preview
+          jupyter labextension install @lckr/jupyterlab_variableinspector
+          jupyter labextension install jupyterlab-drawio
+          jupyter labextension install jupyterlab_voyager
+          # An extension for rendering Bokeh content in JupyterLab notebooks
+          jupyter labextension install jupyterlab_bokeh
+          jupyter labextension install jupyterlab_filetree
+          jupyter labextension install jupyterlab-dash
+          jupyter labextension install jupyterlab_tensorboard
+          jupyter labextension install @jupyterlab/dataregistry-extension # First class datasets in JupyterLab
+          jupyter labextension install jupyterlab-spreadsheet # JupyterLab plugin for viewing spreadsheets, such as Excel and OpenOffice
+          jupyter labextension install @jupyter-widgets/jupyterlab-manager # A collection of helpers for Jupyter/IPython
+          jupyter labextension install jupyter-matplotlib # Matplotlib Jupyter Extension
+          # List jupyterlab extensions
+          jupyter labextension list
+  args:
+    executable: /bin/bash
+
+- name: Create a dedicated group to run Jupyter
+  group:
+    name: jupyter
+    gid: "2841"
+    system: yes
+    state: present
+
+- name: Create a dedicated user to run Jupyter
+  user:
+    name: jupyter
+    groups: jupyter
+    uid: "2841"
+    system: yes
+    createhome: yes
+    state: present
+
+- name: Setup Jupyter notebook directory
+  file:
+    path: /data
+    state: directory
+    owner: jupyter
+    group: jupyter
+    mode: 0777
+  tags: ['always']
+
+- name: Download NLTK data
+  shell: /usr/bin/python3 -m nltk.downloader -d "/usr/local/share/nltk_data all"
+
+- name: Fix umask issue when installing packages with pip
+  shell: 'find {{ item }} -type d -exec chmod 755 {} \;'
+  with_items:
+    - '/data/nltk_data/'
+
+- name: Fix umask issue when installing packages with pip
+  shell: 'find {{ item }} -type f -exec chmod 644 {} \;'
+  with_items:
+    - '/data/nltk_data/'
+

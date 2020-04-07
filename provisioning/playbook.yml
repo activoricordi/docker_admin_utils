@@ -1,0 +1,10 @@
+---
+- name: "Install new machine"
+  hosts: "all"
+  connection: local
+  become: yes
+  gather_facts: yes
+# Execute the following roles
+  roles:
+    - common
+    - machinelearning

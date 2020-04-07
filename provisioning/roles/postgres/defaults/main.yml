@@ -1,0 +1,9 @@
+---
+# Postgres Version
+postgres_version: 11.5
+
+install_postgres_server: true
+
+postgresql_user: postgres
+postgresql_group: postgres
+

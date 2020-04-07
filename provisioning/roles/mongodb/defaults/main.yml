@@ -1,0 +1,9 @@
+# You can use this variable to control installation source of MongoDB
+# 'mongodb' will be installed from Debian/Ubuntu repos
+# 'mongodb-org' will be installed from MongoDB official repos
+mongodb_package: mongodb-org
+
+# You can control installed version via this param.
+# Should be '3.4', '3.6' or '4.0'. This role doesn't support MongoDB < 3.4.
+# I will recommend you to use latest version of MongoDB.
+mongodb_version: "4.2"

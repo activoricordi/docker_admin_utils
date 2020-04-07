@@ -1,0 +1,8 @@
+---
+token: ''
+image: 'bento/ubuntu-18.10'
+port: 3000
+region: 'nyc2'
+backend_memory: 2048
+SSH_USERNAME: 'vagrant'
+VAGRANTFILE_API_VERSION: "2"
