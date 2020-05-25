@@ -1,4 +1,4 @@
-# Event Streaming
+# Event Data Integration Streaming
 
 Point-to-Point Integration slow down business. The cost and complexity of Point-to-Point Integrations increases over time. For instance, if we integrate an ERP and a Salesforce system.
 In traditional enterprise projects, most of the customers start choosing to build Point-to-Point integrations since the initial cost and complexity tend to be small at the beginning (Year 1); however, these integrations do not only increase its cost and complexity exponentially everytime a new change is made or new integration is donw but also they tend to slow down business since they force to perform a full regression testing everytime we change them.
@@ -62,7 +62,3 @@ Publish / subscribe messaging or pub/sub messaging is a form of asynchronous ser
 
 * There are directed graphs with a topological order. Every edge at the graph is in a sequence from earlier to later.
 * **Directed Acyclic Graphs** are often used in ETL processes to define pipelines for file ingestion/transform.
-
-### ODP Data Replication API 2.0
-
-This is an internal API only accessible by SAP products only.

@@ -110,6 +110,26 @@ exe () {
     return $status
 }
 
+#################################################################
+### * function prettyTime  '[Seconds]'
+### convert seconds in pretty Time to human readable string: 165392 -> 1d 21h 56m 32s
+### Function by sindresorhus at https://github.com/sindrerhus/pretty-time-zsh.git
+###
+################################################################
+function prettyTime() {
+  local human total_seconds=$1
+  local days=$(( total_seconds / 60 / 60 / 24))
+  local hours=$(( total_seconds / 60 / 60 % 24 ))
+  local minutes=$(( total_seconds / 60 % 60))
+  local seconds=$(( total_seconds % 60))
+
+  ((days > 0)) && human +="${days}d "
+  ((hours > 0)) && human+="${hours}h "
+  ((minutes > 0)) && human+="${minutes}m "
+  human+="${seconds}s"
+
+  return "$human"
+}
 
 echo -e "Start Server Basic Provisioning ✔ Success"
 

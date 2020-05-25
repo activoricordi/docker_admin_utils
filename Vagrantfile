@@ -13,6 +13,7 @@ end
 
 # Check if Plugins are installed
 PluginsChecker.ensurePluginsInstalled(['vagrant-vbguest'])
+PluginsChecker.ensurePluginsInstalled(['vagrant-dns'])
 PluginsChecker.ensurePluginsInstalled(['yaml'])
 PluginsChecker.ensurePluginsInstalled(['vagrant-aws']) # vagrant plugin install vagrant-aws
 PluginsChecker.ensurePluginsInstalled(['vagrant-azure']) # vagrant plugin install vagrant-azure
@@ -39,6 +40,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   ### Make Host Name dynamic based on Vagrant project name
   config.vm.hostname = "#{vagrant_domain}"
 
+  ## dns settings
+  config.dns.tlds = ['dev']
+  config.dns.patterns = [/^.*#{vagrant_domain}$/]
+
   # debug: puts "Virtual Machine hostname is #{config.vm.hostname}"
   
   ### SSH CONFIGURATION  
@@ -64,8 +69,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
+  # config.vm.synced_folder ".", "/vagrant",
   config.vm.synced_folder "C:/HashiCorp/vagrantboxes/vgrant_boilerplate/provisioning/", "/provisioning", mount_options: ["uid=33","gid=33","dmode=755","fmode=644"]
   
+  # config.vm.synced_folder "./dev", "/home/vagrant/", id: "vagrant-root", :owner => "vagrant", :mount_options => ["dmode=775","fmode=664"]
+
+  # config.vm.synced_folder "./dev/projects", "/home/vagrant/projects", id: "vagrant-root", :owner => "vagrant", :mount_options => ["dmode=775","fmode=664"]
+
   # config.vm.synced_folder "./provisioning/", "/provisioning",type: 'smb'
    
 

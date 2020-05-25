@@ -11,3 +11,7 @@ Install the basic packages:
 * python-pip
 * python3-pip
 * libpq-dev
+
+## Docker Container Tests
+
+* [Shrun](https://www.npmjs.com/package/shrun)
