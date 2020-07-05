@@ -1,0 +1,16 @@
+---
+## Set neovim installed and configured to be used
+- name: Make sure Nvim is present
+  apt:
+    name:
+      - neovim
+      - python3-neovim
+  state: present
+  update_cache: true
+  cache_valid_time: "{{ apt_cache_valid_time }}"
+  become: yes
+
+- name: Make sure .nvimrc is present
+  template:
+    src: templates/.nvimrc
+    dest: ~/.nvimrc

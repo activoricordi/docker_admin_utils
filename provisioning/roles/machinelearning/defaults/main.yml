@@ -1,3 +1,10 @@
 ---
-python_version: 3.6.8
-python_version_major_minor: 3.6 # should be compatible with python_version listed above
+python_version: 3.7.2
+python_version_major_minor: 3.7 # should be compatible with python_version listed above
+
+vagrant_path: "/home/vagrant"
+virtual_Environment_path: "/venv"
+virtual_Environment_Name: "/jupyterlab"
+jupyterPath: "/bin/jupyter"
+
+jupyterLabInstall: "{{ vagrant_path }}{{ virtual_Environment_path }}{{ virtual_Environment_Name }}{{ jupyterPath }} labextension install"

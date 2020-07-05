@@ -1,0 +1,359 @@
+---
+
+# #### Create a dedicated group to run JupyterLab
+# - name: Create a dedicated group to run JupyterLab
+#   group:
+#     name: jupyter
+#     gid: "2841"
+#     system: yes
+#     state: present
+
+# ####  Create a dedicated user to run JupyterLab
+# - name: Create a dedicated user to run JupyterLab
+#   user:
+#     name: jupyter
+#     groups: ["jupyter"]
+#     uid: "2841"
+#     system: yes
+#     createhome: yes
+#     state: present
+
+
+# Create and activate new environment packages required for the data science
+# Install packages required for the data science
+# Pending to evaluate
+# patsy - https://patsy.readthedocs.io/en/latest/
+# statsmodels - https://www.statsmodels.org/stable/index.html
+# Tensorflow
+# Luigi Workflow engine - https://www.slideshare.net/erikbern/luigi-presentation-nyc-data-science
+- name: Create Virtual Environment
+  pip:
+    name: [
+    "fastavro==0.23.4",
+    "beautifulsoup4",
+    "contractions",
+    "PyPDF2",
+    "textract",
+    "cython",
+    "networkx",
+    "gensim",
+    "numexpr",
+    "inflect",
+    "ipython",
+    "Bottleneck==1.3.2",
+    "sqlalchemy",
+    "Jinja2",
+    "jsonschema",
+    "azure-eventhub",
+    "azure-mgmt-eventhub",
+    "azure-eventhubs-client",
+    "awscli",
+    "boto3==1.13.25",
+    "botocore==1.16.25",
+    "graphviz",
+    "h5py",
+    "jmespath",
+    "marathon",
+    "mmh",
+    "mpmath",
+    "pandocfilters",
+    "pexpect",
+    "ptyprocess",
+    "pyenchant",
+    "python-crfsuite",
+    "quiver",
+    "rabbitpy",
+    "redis",
+    "argcomplete",
+    "asn1crypto",
+    "attrs",
+    "bleach",
+    "blinker",
+    "bz2file",
+    "certifi",
+    "cffi",
+    "chardet",
+    "configparser",
+    "cookiecutter",
+    "csv2sqlite",
+    "cryptography",
+    "cycler",
+    "cymem",
+    "cytoolz",
+    "decorator",
+    "defusedxml",
+    "dill",
+    "docutils",
+    "docx2txt",
+    "ebooklib",
+    "entrypoints",
+    "enum34==1.1.10",
+    "extract-msg==0.23.3",
+    "functional-python",
+    "futures3",
+    "idna==2.9",
+    "IMAPClient==2.1.0",
+    "intel-openmp==2020.0.133",
+    "ipaddress==1.0.23",
+    "ipykernel==5.3.0",
+    "kafka==1.3.5",
+    "kiwisolver==1.2.0",
+    "libxml2-python3",
+    "lxml==4.5.1",
+    "markupsafe",
+    "mistune",
+    "msgpack-numpy",
+    "msgpack",
+    "murmurhash3",
+    "nbconvert",
+    "nbformat",
+    "numpy==1.18.5",
+    "oauthlib",
+    "olefile",
+    "pdf2textlib==1.0.4",
+    "openssl-python",
+    "packaging",
+    "pandas",
+    "pathlib",
+    "pexpect",
+    "pickleshare",
+    "pillow",
+    "pipdeptree",
+    "pla",
+    "preshed",
+    "prometheus_client",
+    "prompt_toolkit",
+    "ptyprocess",
+    # "pyarrow==0.15.1",
+    # "perspective-python",
+    "pycparser",
+    "pycrypto",
+    "pygments",
+    "pyjwt",
+    "pyopenssl",
+    "pyparsing",
+    "python-gettext",
+    "PyQt5",
+    "pyrsistent",
+    "pysocks",
+    "python-dateutil",
+    "python-pptx",
+    "pytz",
+    "pyyaml",
+    "pyzmq",
+    "readline",
+    "regex",
+    "requests",
+    "general-log-parser==0.1.7",
+    "s3transfer",
+    "scandir",
+    "send2trash",
+    "setuptools",
+    "simplegeneric",
+    "singledispatch",
+    "sip",
+    "six",
+    "smart_open",
+    "soupsieve",
+    "speechrecognition",
+    "supersqlite",
+    "statsmodels",
+    "terminado",
+    "testpath",
+    "tk",
+    "toolz",
+    "tornado",
+    "tqdm",
+    "traitlets",
+    "twython",
+    "ujson",
+    "urllib3",
+    "wcwidth",
+    "webencodings",
+    "wheel",
+    "wrapt",
+    "votebase",
+    "yaml-1.3",
+    "zmq-message-patterns",
+    "raw-zlib==0.1.8"
+    ]
+    virtualenv: "/home/vagrant/venv/jupyterlab"
+    # requirements: "/vagrant/requirements.txt"
+    virtualenv_command: /usr/bin/python3 -m venv
+    virtualenv_site_packages: no
+    state: present
+  become: true
+
+## Install Artifical Intelligence
+## Pandas - Data Frames Machine Learning, Pandas is the most used library for data analysis in Python
+## Numpy - Numerical Functions Machine Learning
+## scikit-learn - Machine Learning Functions
+## fastparquet - It is a package that allow persis raw or processed data to disk into compressed format which can be reload into memory very fast
+## xlrd - let you use pandas to read Excel Spreadsheets
+## spacy - Natural Language Processing
+## bokeh - Data Visualization
+## matplotlib - Data Visualization
+## Dash - Data Visualization
+## Jupyterlab requires the Jupyter core to be installed
+## ansible-jupyter-widgets - Ansible Jupyter Widgets
+## Ansible-kernel Ansible Kernel
+
+################################################
+##### Install JupyterLab Extensions #####
+################################################
+## @parente jupyterlab quickopen - https://github.com/parente/jupyterlab-quickopen - Quickly open a file in JupyterLab by typing part of its name
+##  https://github.com/jupyterlab/jupyterlab-toc - Table of Contents extension for JupyterLab
+## altair_data_server https://github.com/altair-viz/altair_data_server
+################################################
+- name: Install Artifical Intelligence libraries, JupyterLab and its extensions
+  pip:
+    name: [
+    "fastai==1.0.61",
+    "fastparquet==0.4.0",
+    "tables",
+    "seaborn",
+    "xlrd",
+    "xlsxwriter",
+    "plotly",
+    "bokeh==2.0.2",
+    "matplotlib",
+    "wordcloud",
+    "dash==1.12.0",
+    "pyspark",
+    "biopython",
+    "opencv-python",
+    "Keras==2.3.1",
+    "keras-adversarial==0.0.3",
+    "keras-vis",
+    "ksql",
+    "psycopg2",
+    "nltk",
+    "scikit-image",
+    "scikit-learn",
+    "sklearn-crfsuite",
+    "sklearn-pandas",
+    "scipy",
+    "spacy",
+    "thinc",
+    "tensorboard",
+    "tensorflow",
+    "tensorflow-hub",
+    "jupyter",
+    "jupyterlab",
+    "ansible-kernel",
+    "Nikola[extras]",
+    "ipywidgets",
+    "qgrid",
+    "ipysheet",
+    "iplantuml",
+    "ipytree",
+    "tqdm",
+    "jupyterlab_templates",
+    "jupyterlab_commands",
+    "nbconvert",
+    "jupytext",
+    "voila",
+    "beakerx",
+    "bookbook==0.2",
+    "notedown",
+    "papermill==2.1.1",
+    "altair",
+    "altair_data_server",
+    "jupyterthemes",
+    "vega_datasets",
+    "flake8",
+    "nbresuse==0.3.3",
+    "jupyter-lsp",
+    "jupyterlab_code_formatter",
+    "applicationinsights-jupyter",
+    "jupyter_contrib_nbextensions",
+    "jupyter_nbextensions_configurator",
+    "ansible-jupyter-widgets",
+    "jupyterlab-dash==0.1.0a3",
+    "jupyter-bokeh==2.0.2",
+    "featurize-jupyterlab==0.0.27",
+    "jupyterlab-powerpoint==0.1.0",
+    "jupyterlab-widgets==0.6.15",
+    "jupyterlab-github==2.0.0",
+    "jupyterlab-pygments==0.1.1",
+    "jupyterlab-zip==1.0.1",
+    "jupyterlab-quickopen==0.4.1",
+    "pythreejs",
+    "nbdime",
+    "jupyter-fs",
+    "ipycytoscape",
+    "ipydagred3",
+    "great_expectations",
+    ]
+    virtualenv: "/home/vagrant/venv/jupyterlab"
+    virtualenv_command: /usr/bin/python3 -m venv
+    virtualenv_site_packages: no
+    state: present
+  become: true
+  tags: ["jupyter","machinelearning"]
+
+## Activate virtual environment
+## virtualenv activate
+- name: Activate Virtual Environment JupyterHub
+  shell: source activate
+  args:
+    chdir: "/home/vagrant/venv/jupyterlab/bin/"
+    executable: /bin/bash
+  become: true
+  tags: ["jupyter","machinelearning"]
+
+
+- name: Setup Private Data directory
+  file:
+    path: "/home/vagrant/data/"
+    state: "directory"
+    owner: "vagrant"
+    group: "vagrant"
+    mode: "0777"
+  become: true
+  tags: ["jupyter","machinelearning"]
+
+- name: Setup Jupyter NLTK Data directory
+  file:
+    path: "/home/vagrant/data/ntlk"
+    state: "directory"
+    owner: "vagrant"
+    group: "vagrant"
+    mode: "0777"
+  become: true
+  tags: ["jupyter","machinelearning"]
+
+## Download NLTK Data
+- name: Download NLTK data
+  shell: /home/vagrant/venv/jupyterlab/bin/python3 -m nltk.downloader stopwords -d "/home/vagrant/data/nltk_data"
+  args:
+  # chdir: "/home/vagrant/venv/jupyterlab/"
+    executable: /bin/bash
+  become: yes
+  tags: ["jupyter","machinelearning"]
+
+## Fix umask issue
+- name: Fix umask issue when installing packages with pip
+  shell: 'find {{ item }} -type d -exec chmod 755 {} \;'
+  with_items:
+    - '/home/vagrant/data/nltk_data'
+  become: yes
+  tags: ["jupyter","machinelearning"]
+
+## Fix umask issue
+- name: Fix umask issue when installing packages with pip
+  shell: 'find {{ item }} -type f -exec chmod 644 {} \;'
+  with_items:
+    - '/home/vagrant/data/nltk_data'
+  become: yes
+  tags: ["jupyter","machinelearning"]
+
+## Once everything is installed freeze the Python requirements
+- name: Freeze PIP Requirements
+  shell: /home/vagrant/venv/jupyterlab/bin/pip3 freeze > requirements.txt
+  args:
+    executable: /bin/bash
+  # chdir: "/home/vagrant/venv/jupyterlab/bin/"
+    creates: requirements.txt
+  become: yes
+  tags: ["jupyter","machinelearning"]

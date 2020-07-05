@@ -1,0 +1,127 @@
+## Ansible playbook for installing common packages.
+## This is a playbook YAML file for the Ansible provider
+## Modified from @author Jeff Geerling (2015).
+---
+## Add basic packages
+## [Progress](https://github.com/Xfennec/progress)
+- name: Update apt cache if needed.
+  become_user: root
+  apt:
+    update_cache: yes
+    cache_valid_time: "{{ apt_cache_valid_time }}"
+  become: yes
+- name: Ensure basic packages are installed
+  become_user: root
+  apt:
+    name: [
+      'acl',
+      'gcc',
+      'g++',
+      'curl',
+      'wget',
+      "ncdu",
+      "htop",
+      "sysstat",
+      "progress",
+      'landscape-common',
+      'software-properties-common',
+      'unzip',
+      'git',
+      'make',
+      'automake',
+      'autoconf',
+      'libreadline-dev',
+      'libncurses-dev',
+      'libssl-dev',
+      'libyaml-dev',
+      'libxslt-dev',
+      'libffi-dev',
+      'libtool',
+      'unixodbc-dev',
+      'python3-pip'
+      ]
+    state: present
+    update_cache: true
+    cache_valid_time: "{{ apt_cache_valid_time }}"
+  become: yes
+  tags: common
+
+## Remove unnecessary apt packages to slim the VM
+- name: Remove apt packages
+  apt:
+    name: [
+    "gnome-shell-extension-ubuntu-dock",
+    "contact-lookup-applet",
+    "mono-common",
+    "gnome-orca",
+    "gnome-games",
+    "gnome-games-data",
+    "gnome-cards-data",
+    "rhythmbox",
+    "openoffice.org-calc",
+    "openoffice.org-draw",
+    "openoffice.org-impress",
+    "openoffice.org-writer",
+    "openoffice.org-base-core",
+    "bluez-audio",
+    "bluez-cups",
+    "bluez-gnome",
+    "bluez-utils",
+    "brltty",
+    "brltty-x11",
+    "gnome-accessibility-themes",
+    "gnome-mag",
+    "libgnome-mag2",
+    "transmission-common",
+    "transmission-gtk"
+    ]
+    update_cache: yes
+    state: absent
+  become: yes
+  become_user: root
+  become_method: sudo
+  tags: common
+
+# Could not import python modules: apt, apt_pkg before python3-apt package which is done at the previous task.
+## Ensure apt-transport-https is installed.
+## Ensure ca-certificates is installed.
+- name: Ensure dependencies are installed.
+  apt:
+    name: ["apt-transport-https", "ca-certificates","gnupg2"]
+    state: present
+    update_cache: true
+    cache_valid_time: "{{ apt_cache_valid_time }}"
+  tags: common
+  become: yes
+
+# A task for adding the credentials
+- name: Should have credentials dir
+  become_user: root
+  file:
+    path: ~/credentials
+    state: directory
+  tags: common
+
+- name: Ensure old versions of Docker are not installed.
+  apt:
+      name: ["docker","docker-engine"]
+      state: absent
+  become: yes
+  tags: common
+
+# A task for installing Docker and its companion
+- name: install Docker and friends
+  apt:
+    name: ['docker','python3-docker']
+    state: latest
+    update_cache: true
+    cache_valid_time: "{{ apt_cache_valid_time }}"
+  become: yes
+  tags: common
+
+# sudo update-alternatives --install /usr/bin/vi vi /usr/bin/nvim 60
+# sudo update-alternatives --config vi
+# sudo update-alternatives --install /usr/bin/vim vim /usr/bin/nvim 60
+# sudo update-alternatives --config vim
+# sudo update-alternatives --install /usr/bin/editor editor /usr/bin/nvim 60
+# sudo update-alternatives --config editor

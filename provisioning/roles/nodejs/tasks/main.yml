@@ -117,3 +117,7 @@
   npm:
     name: jest
     global: yes
+
+##  Install terminalizer tool for performing gifs
+## https://github.com/faressoft/terminalizer
+- name: Install Terminalizer

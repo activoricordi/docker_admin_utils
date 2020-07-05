@@ -2,7 +2,7 @@
 
 ## Tools
 
-#### Add Css Styles to Elm
+### Add Css Styles to Elm
 
 As you could presume, it is possible to add **css** to a **style.css** file. This file could be added to the **html file**.
 

@@ -1,8 +1,33 @@
 ---
-token: ''
-image: 'bento/ubuntu-18.10'
-port: 3000
-region: 'nyc2'
-backend_memory: 2048
-SSH_USERNAME: 'vagrant'
-VAGRANTFILE_API_VERSION: "2"
+# Configured hosts / docks
+# docktop - Desktop where to perform Local Analysis
+# terraform - A VM where to 
+- name: 'vagrdock'
+  token: ''
+  siteName: 'docktop'
+  syncedfolder: 'provisioning'
+  image: 'bento/ubuntu-20.04'
+  imageVersion: '202005.21.0'
+  vm_memory: 2048
+  vm_cpus: 2
+  host_ssh_port: 2222
+  guest_ssh_port: 22
+  ssh_username: 'vagrant'
+  ssh_password: 'vagrant'
+  host_http_port: 8888
+  guest_http_port: 8888
+  awsregion: 'nyc2'
+  VAGRANTFILE_API_VERSION: "2"
+# - name: 'terraform'
+#   token: ''
+#   siteName: 'terraform'  
+# - name: 'streaming'
+#   token: ''
+#   siteName: 'eventstream'
+#
+#   ports:
+#    - name: 'ssh'
+#      host: 2222
+#      guest: 22
+#   - name: 'kafka'
+#     host:   

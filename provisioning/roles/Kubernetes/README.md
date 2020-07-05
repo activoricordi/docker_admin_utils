@@ -4,10 +4,10 @@
 
 Kubernetes (k8s) is a container Management solution. It is used by Google's Open Source Platform to manage cluster and automatically deploy, scale and control operation of application containers. The Kubernetes applications are deployed in form of Docker containers and services. This makes the installation of the applications faster and easier. Additionally, since the Docker containers images are lightweight, it consumes less resources.
 
-+ Pods
-+ Replication Controllers
-+ Services
-+ Deployment
+* Pods
+* Replication Controllers
+* Services
+* Deployment
 
 ## Containers
 

@@ -139,8 +139,27 @@ start_time="$(date +%s)"
 # Get domain name passed from Vagrantfile
 vagrant_domain=$1
 
-# exe "Performing Ubuntu Package Manager Upgrade and Update"
-#    packageManagerUpdate
+# ROOT_HOME="/root"
+# ROOT_SSH_HOME="$ROOT_HOME/.ssh"
+# ROOT_AUTHORIZED_KEYS="$ROOT_SSH_HOME/authorized_keys"
+# VAGRANT_HOME="/home/vagrant"
+# VAGRANT_SSH_HOME="$VAGRANT_HOME/.ssh"
+# VAGRANT_AUTHORIZED_KEYS="$VAGRANT_SSH_HOME/authorized_keys"
+
+# # Setup keys for root user.
+# ssh-keygen -C root@localhost -f "$ROOT_SSH_HOME/id_rsa" -q -N ""
+# cat "$ROOT_SSH_HOME/id_rsa.pub" >> "$ROOT_AUTHORIZED_KEYS"
+# chmod 644 "$ROOT_AUTHORIZED_KEYS"
+
+# # Setup keys for vagrant user.
+# ssh-keygen -C vagrant@localhost -f "$VAGRANT_SSH_HOME/id_rsa" -q -N ""
+# cat "$VAGRANT_SSH_HOME/id_rsa.pub" >> "$ROOT_AUTHORIZED_KEYS"
+# cat "$VAGRANT_SSH_HOME/id_rsa.pub" >> "$VAGRANT_AUTHORIZED_KEYS"
+# chmod 644 "$VAGRANT_AUTHORIZED_KEYS"
+# chown -R vagrant:vagrant "$VAGRANT_SSH_HOME"
+
+ exe "Performing Ubuntu Package Manager Upgrade and Update"
+    packageManagerUpdate
 
 # install build-essential - It a set of libraries which enables you to build libraries created in emacs and vim.
 exe "Install Build Essential Package" \
@@ -173,16 +192,12 @@ exe 'Install libffi-dev Package' \
 exe 'Install zlib1g-dev Package' \
     packageInstall "zlib1g-dev" zlib1g-dev
 
-# Add Repository and Update for running Ansible with Python 3.6
-exe 'Add Repository python3.6 and Ansible' \
-    addRepository ppa:jonathonf/python-3.6 ppa:ansible/ansible
-
 # Install Python 3.6 at Linux Distro for running Ansible
-exe 'Install python3.6 common Package' \
-    packageInstall "python3.6" python3.6
+exe 'Install python3.7 common Package' \
+    packageInstall "python3.7" python3.7
 
-exe 'Install python3.6-dev' \
-    packageInstall "python3.6-dev" python3.6-dev
+exe 'Install python3.7-dev' \
+    packageInstall "python3.7-dev" python3.7-dev
 
 exe 'Install ansible' \
     packageInstall "ansible" ansible

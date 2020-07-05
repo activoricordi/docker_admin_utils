@@ -1,0 +1,22 @@
+---
+
+## Start Schema Registry
+- name: Start Schema Registry
+  command: systemctl start confluent-schema-registry
+
+## Stop Schema Registry
+- name:
+  command: systemctl stop confluent-schema-registry
+
+## Restart Schema Registry
+- name:
+  command: systemctl restart confluent-schema-registry
+
+## Get Status of Schema Registry
+- name:
+  command: systemctl status confluent-schema-registry
+
+- name: reload systemd
+  become: yes
+  become_user: root
+  command: systemctl daemon-reload

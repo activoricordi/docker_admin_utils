@@ -1,0 +1,187 @@
+---
+## - name: Download zsh installer
+##   get_url: url=https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh dest=/tmp/zsh-installer.sh
+
+## - name: Execute the zsh-installer.sh
+##   shell: /tmp/zsh-installer.sh
+
+## - name: Remove the zsh-installer.sh
+##   file: path=/tmp/zsh-installer.sh state=absent
+
+## Install zsh and friends
+## Update git core
+## Install zsh shell
+## Install font configuration tool in Ubuntu
+## Install Powerline
+## Install fonts powerline
+- name: install zsh and friends
+  apt:
+    name: ["git-core","zsh","fontconfig","powerline","fonts-powerline"]
+    state: present
+    update_cache: true
+    cache_valid_time: "{{ apt_cache_valid_time }}"
+  become: yes
+  register: installation
+  tags: ['zsh','oh-my-zsh','oh-my-zsh-packages']
+
+## Make ZSH default shell for user root
+- name: Make ZSH default shell for user root
+  user:
+    name: root
+    shell: /bin/zsh
+
+- name: Check if .zshrc exists
+  stat:
+    path: ~/.zshrc
+  register: stat_rc_result
+
+## Backing up existing ~/.zshrc
+- name: Backing up existing ~/.zshrc
+  shell: if [ -f ~/.zshrc ]; then mv ~/.zshrc{,.orig}; fi
+  when: not stat_rc_result.stat.exists
+  tags: [ zsh, install ]
+
+## Copy default ZSH config for user root
+- name: Copy default ZSH config for user root
+  copy:
+    src: "zshrc"
+    dest: "/root/.zshrc"
+    owner: "root"
+    group: "root"
+    force: "yes"
+  tags: [ zsh, install ]
+
+- name: Template config files for zsh
+  template:
+    src: "zsh-zshrc-template.j2"
+    dest: "/root/.zshrc"
+    owner: "root"
+    group: "root"
+    mode: "0755"
+  tags: [ zsh, install ]
+
+## Make ZSH default shell for user
+- name: "Make ZSH default shell for user {{ ohmyzsh_user }}"
+  user:
+    name: "{{ ohmyzsh_user }}"
+    shell: "/bin/zsh"
+  tags: [ zsh, install ]
+
+## Copy default ZSH config for user
+- name: "Copy default ZSH config for user {{ ohmyzsh_user }}"
+  template:
+    src: "zsh-zshrc-template.j2"
+    dest: "{{ ohmyzsh_user }}/.zshrc"
+    owner: "{{ ohmyzsh_user }}"
+    group: "{{ ohmyzsh_user }}"
+    force: no
+  tags: [ zsh, install ]
+
+## Perform the installation of oh-my-zsh
+- name: Cloning  oh-my-zsh
+  git:
+    repo: "https://github.com/robbyrussell/oh-my-zsh"
+    dest: "~/.oh-my-zsh"
+  when: not stat_oh_my_zsh_result.stat.exists
+
+## Plugins | ensures plugin dir exists
+- name: plugins | ensures plugin dir exists
+  file:
+    path: "~{{ item.0.name }}/.oh-my-zsh/plugins/{{ item.1 }}"
+    state: directory
+    owner: "{{ item.0.name }}"
+  with_subelements:
+    - "{{ oh_my_zsh_users }}"
+    - plugins
+    - skip_missing: yes
+
+## Plugins | Create
+- name: plugins | create
+  copy:
+    content: "{{ oh_my_zsh_plugins[item.1] }}"
+    dest: "~{{ item.0.name }}/.oh-my-zsh/plugins/{{ item.1 }}/{{ item.1 }}.plugin.zsh"
+    owner: "{{ item.0.name }}"
+  with_subelements:
+    - "{{ oh_my_zsh_users }}"
+    - plugins
+    - skip_missing: yes
+
+## Theme Directory
+- name: theme > Directory
+  file:
+    path:  "{{ ohmyzsh_dir }}/custom/themes"
+    state: directory
+  register: themes_rc_result
+
+## Set PowerLine 10K theme
+- name: Cloning Powerlevel10k
+  git:
+    repo: "https://github.com/romkatv/powerlevel10k.git"
+    dest: "{{ ohmyzsh_dir }}/custom/themes/powerlevel10k"
+    depth: "1"
+
+
+## Set zsh-syntax-highlighting Plugin
+- name: Install zsh-syntax-highlighting Plugin
+  git:
+    repo: "https://github.com/zsh-users/zsh-syntax-highlighting.git"
+    dest: "{{ ohmyzsh_dir }}/custom/plugins/zsh-syntax-highlighting"
+    depth: "1"
+
+## Set zsh-autosuggestions
+- name: Install zsh-autosuggestions Plugin
+  git:
+    repo: "https://github.com/zsh-users/zsh-autosuggestions"
+    dest: "{{ ohmyzsh_dir }}/custom/plugins/zsh-autosuggestions"
+    depth: "1"
+
+## Clone iwfmp/mc-solarized-skin
+- name: Clone iwfmp/mc-solarized-skin
+  git:
+    repo: https://github.com/iwfmp/mc-solarized-skin.git
+    version: master
+    dest: "~{{ zsh_user }}/.mc/lib/mc-solarized"
+    force: yes
+  become: yes
+  become_user: "{{ zsh_user }}"
+  when: zsh_mc_solarized_skin and not zsh_shared
+
+## Check fzf installed
+- name: Check fzf installed
+  command: which fzf
+  changed_when: false
+  failed_when: false
+  check_mode: no
+  register: zsh_register_fzf_command
+
+## Set zsh_fzf_path to /usr/local/bin
+- name: Set zsh_fzf_path to /usr/local/bin
+  set_fact:
+    zsh_fzf_path: /usr/local/bin
+  changed_when: false
+  when: zsh_shared
+
+## Set zsh_fzf_path_absolute
+- name: Set zsh_fzf_path_absolute
+  set_fact:
+    zsh_fzf_path_absolute: "{{ zsh_fzf_path | replace('$HOME', '~' + zsh_user) }}"
+  changed_when: false
+
+## Ensure users home binary folder is present
+- name: Ensure users home binary folder is present
+  file:
+    path: "{{ zsh_fzf_path_absolute }}"
+    owner: "{{ zsh_user }}"
+    group: "{{ zsh_user_group }}"
+    mode: u=rwx,g=rwx,o=rx
+    state: directory
+  when: not zsh_shared
+
+- name: "Download fzf to {{ zsh_fzf_path_absolute }}"
+  unarchive:
+    src: "{{ zsh_fzf_url }}"
+    dest: "{{ zsh_fzf_path_absolute }}"
+    remote_src: yes
+    creates: "{{ zsh_fzf_path_absolute }}/fzf"
+  when: zsh_register_fzf_command.rc == 1
+
