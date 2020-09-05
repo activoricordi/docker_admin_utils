@@ -8,13 +8,17 @@
 - name: Install HTTPS transport for APT
   apt:
     pkg: apt-transport-https
-    state: installed
+    state: present
   when: not apt_https_transport.stat.exists
+
+- name: Update caches repository
+  apt:
+    update_cache: yes
 
 - name: Install GPG
   apt:
     pkg: gnupg
-    state: installed
+    state: present
 
 - name: Import the NodeSource GPG key into apt
   apt_key:
@@ -38,27 +42,39 @@
     repo: deb https://dl.yarnpkg.com/debian/ stable main
     state: present
 
+# Add the NodeJS LTS repo
 - name: Add NodeSource deb repository
   apt_repository:
     repo: 'deb https://deb.nodesource.com/node_{{ nodejs_version }} {{ ansible_distribution_release }} main'
     state: present
 
+# Add the NodeJS LTS Source Repository
 - name: Add NodeSource deb-src repository
   apt_repository:
     repo: 'deb-src https://deb.nodesource.com/node_{{ nodejs_version }} {{ ansible_distribution_release }} main'
     state: present
 
-# Install NodeJS, Jest and yarn
+# Install NodeJS
 - name: ensure nodejs latest stable is installed
   apt:
-    name: ["nodejs", "yarn"]
+    name: nodejs
     state: latest
     update_cache: true
     cache_valid_time: "{{ apt_cache_valid_time }}"
 
+# Install Yarn
+- name: Ensure Yarn latest stable is installed
+  apt:
+    name: yarn
+    state: latest
+    update_cache: true
+    cache_valid_time: "{{ apt_cache_valid_time }}"
+    global: yes
+
 - name: Install "pm2" node.js package globally.
   npm:
     name: pm2
+    state: latest
     global: yes
 
 # Bring Typescript to be used instead of Normal Javascript
@@ -67,26 +83,31 @@
 - name: Install Typescript package globally.
   npm:
     name: typescript
+    state: latest
     global: yes
 
 # Bring Typescript NodeJS
 # Install ts-node executable globally which allows Typescript to be run seamlessly in a NodeJS environment.
 # Enable directly running typescript
-- name: Install "typescript" node.js package globally.
+- name: Install typescript node.js package globally.
   npm:
     name: ts-node
+    state: latest
     global: yes
 
-- name: Install tslint node.js package
+# TS-Lint is deprecated and replaced by ts-lint
+- name: Install es-lint node.js package for TS Lint
   npm:
    name: tslint
    global: yes
 
+# Nodemon is installed
 - name: Install "nodemon" package
   npm:
     name: nodemon
     global: yes
 
+# Gulp is installed globally
 - name: Gulp | Gulp CLI install
   npm:
     name: gulp-cli
@@ -96,3 +117,7 @@
   npm:
     name: jest
     global: yes
+
+##  Install terminalizer tool for performing gifs
+## https://github.com/faressoft/terminalizer
+- name: Install Terminalizer

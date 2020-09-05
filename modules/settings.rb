@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-# This function is a modification of Setting function from Vladislav Rastrusny                                                                     /____//____/
+# This function is a modification of Settings function from Vladislav Rastrusny                                                                     /____//____/
 # Email: FractalizeR@yandex.ru, vladislav.rastrusny@gmail.com
 # http://www.fractalizer.ru
 #
@@ -10,23 +10,24 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 # or send a letter to The Apache Software Foundation Dept. 9660 Los Angeles, CA 90084-9660 U.S.A.
 
-require 'yaml'
+require "yaml"
+
 
 module Settings
 
-    # Get the Vagrant Project Name
-    def Settings.siteName
-       vagrant_sitename = File.basename(Dir.pwd); #taken from VVV
-       # puts "Site name is #{vagrant_sitename}"
-       sitename = vagrant_sitename.tr("_", "")
-       # puts "Normalized site name #{sitename}"
-       sitename
+    def Settings.vagrantfiledir(fileName)
+      current_dir = File.dirname(File.expand_path(fileName))
+      puts "Current dir is #{current_dir}"
+       current_dir
+    end
+
+    def Settings.projectFileDir(fileName)
+      current_dir = File.dirname(File.expand_path(fileName))
+      puts "Current dir is #{current_dir}"
+       current_dir
     end
 
     def Settings.readConfiguration(folder, ymlFile)
-        # current_dir = File.dirname(File.expand_path(__FILE__))
-        # puts "Current dir is #{current_dir}"
-
         config_file = File.join('config', 'config.yml')
         # puts "Configuration file is #{config_file}"
         default_config_file = File.join('config', 'config.default.yml')
@@ -36,8 +37,9 @@ module Settings
           else
             settings =YAML.load_file(default_config_file)
           end
-        settings[0]
-    end 
+        # settings[0]
+        settings
+    end
 
     def Settings.readFromYml(ymlFile)
         settings = YAML.load_file('./config/config.yml')

@@ -1,0 +1,40 @@
+---
+## Replace zsh for this ohmyzsh_user
+ohmyzsh_user: "vagrant"
+## Get ohmyzsh_git_repository from oh-my-zsh
+ohmyzsh_git_repository: "https://github.com/robbyrussell/oh-my-zsh.git"
+ohmyzsh_dir: /usr/local/share/oh-my-zsh
+
+# Oh My ZSH template vars.
+ohmyzsh_zshrc_create: true
+ohmyzsh_zshrc_template: "templates/zshrc.zsh-template.j2"
+
+oh_my_zsh_tmp: /tmp/.oh-my-zsh
+
+## oh-my-zsh plugins
+oh_my_zsh_plugins: {}
+
+oh_my_zsh_default_plugins:
+  - cp
+  - command-not-found
+  - git
+  - git-extras
+  - gnu-utils
+  - history
+  - pip
+  - python
+  - ruby
+  - screen
+  - ssh-agent
+  - svn
+
+## oh-my-zsh themes
+oh_my_zsh_themes: {}
+
+#####################################
+### FZF
+#####################################
+zsh_register_fzf_command: ""
+
+
+#######################################

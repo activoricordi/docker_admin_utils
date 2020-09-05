@@ -7,4 +7,5 @@
 # Execute the following roles
   roles:
     - common
-    - machinelearning
+#    - eventstream
+#    - machinelearning

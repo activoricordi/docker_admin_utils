@@ -1,15 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-#
-# This project is maintained by:
-#  _    ____          ___      __               ____             __
-# | |  / / /___ _____/ (_)____/ /___ __   __   / __ \____ ______/ /________  ___________  __  ____  __
-# | | / / / __ `/ __  / / ___/ / __ `/ | / /  / /_/ / __ `/ ___/ __/ ___/ / / / ___/ __ \/ / / / / / /
-# | |/ / / /_/ / /_/ / (__  ) / /_/ /| |/ /  / _, _/ /_/ (__  ) /_/ /  / /_/ (__  ) / / / /_/ / /_/ /
-# |___/_/\__,_/\__,_/_/____/_/\__,_/ |___/  /_/ |_|\__,_/____/\__/_/   \__,_/____/_/ /_/\__, /\__, /
-#                                                                                   /____//____/
-#
+# This function is a modification of Settings function from Vladislav Rastrusny                                                                     /____//____/
 # Email: FractalizeR@yandex.ru, vladislav.rastrusny@gmail.com
 # http://www.fractalizer.ru
 #
@@ -17,11 +9,11 @@
 # United States License. To view a copy of this license, visit
 # http://www.apache.org/licenses/LICENSE-2.0
 # or send a letter to The Apache Software Foundation Dept. 9660 Los Angeles, CA 90084-9660 U.S.A.
-#
+
 module Ansible
     def Ansible.ensureAnsibleFilesPresent
-        if not File.exist?("./site.yml")
-            raise "You must create main playbook file for Ansible named 'site.yml' next to Vagrantfile! See site.example.yml for instructions\n"
+        if not File.exist?("./docks.yml")
+            raise "A playbook file named 'provisioning/playbook.yml' next to Vagrantfile!\n"
         end
 
         if not File.exist?("./hosts")

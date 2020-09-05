@@ -1,1 +1,12 @@
 ---
+## Docker Default Preparation
+
+packages_preparation:
+  - python-pip
+  - docker
+  - device-mapper-libs
+  - device-mapper-event-libs
+
+pip_dependencies:
+  - docker-pycreds
+  - dockerpty

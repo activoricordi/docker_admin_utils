@@ -1,0 +1,51 @@
+---
+
+## Install Python 3.7
+- name: Install Python 3.7
+  become: true
+  apt:
+    name: "python3"
+    state: "present"
+    update_cache: yes
+  tags: ["jupyter","machinelearning"]
+
+- name: Install python Dev
+  become: true
+  apt:
+    name: "python3-dev"
+    state: "present"
+    update_cache: yes
+  tags: ["jupyter","machinelearning"]
+
+- name: Install pip3
+  become: true
+  apt:
+    name: "python3-pip"
+    state: "present"
+    update_cache: yes
+  tags: ["jupyter","machinelearning"]
+
+
+## Install required packages for data science
+## Install 'virtualenv' package
+- name: Install required packages for data science
+  apt:
+    name: ["libblas-dev",
+    "liblapack-dev",
+    "gfortran",
+    "libffi-dev",
+    "pkg-config",
+    "libfreetype6-dev",
+    "libpng-dev",
+    "pandoc",
+    "texlive-xetex",
+    "gcc",
+    "g++",
+    "python3-virtualenv",
+    "python3-venv",
+    "nodejs",
+    "npm"]
+    state: "latest"
+    update_cache: yes
+  become: true
+  tags: ["jupyter","machinelearning"]

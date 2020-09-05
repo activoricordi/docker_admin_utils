@@ -1,0 +1,20 @@
+# === Install Java Development Kit
+# Debian
+- name: Install necessary packages
+  apt:
+    name: openjdk-8-jdk
+    update_cache: yes
+    state: present
+  when: ansible_os_family == 'Debian'
+
+- name: Apply workaround for https://bugs.launchpad.net/ubuntu/+source/ca-certificates-java/+bug/1396760
+  become: yes
+  become_user: root
+  shell: dpkg --purge --force-depends ca-certificates-java
+
+- name: Reinstall cert packages to fix issue
+  apt:
+    name: ca-certificates-java
+    update_cache: no
+    state: present
+  when: ansible_os_family == 'Debian'

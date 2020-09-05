@@ -1,0 +1,175 @@
+---
+
+## Setup Jupyter notebook directory
+- name: Setup Jupyter notebook directory
+  file:
+    path: "/home/vagrant/data/notebooks"
+    state: "directory"
+    owner: "vagrant"
+    group: "vagrant"
+    mode: "0777"
+  become: true
+  tags: ["jupyter","machinelearning"]
+
+## Activate virtual environment
+- name: Register jupyterlab
+  shell: /home/vagrant/venv/jupyterlab/bin/jupyter serverextension enable --py jupyterlab --sys-prefix
+  args:
+    executable: /bin/bash
+  become: yes
+  tags: ["jupyter","machinelearning"]
+
+## Generate a config file
+## jupyter-lab --generate-config
+- name: Generate jupyterlab config file
+  shell: jupyter-lab --generate-config
+  args:
+    executable: /bin/bash
+  become: yes
+  tags: ["jupyter","machinelearning"]
+
+
+## Install JupyterLab Debugger
+## Jupyterlab_bokeh - An extension for rendering Bokeh content in JupyterLab notebooks
+## Jupyterlab Spreadsheet https://github.com/quigleyj97/jupyterlab-spreadsheet - JupyterLab plugin for viewing spreadsheets, such as Excel and OpenOffice
+## Jupyterlab Drawio https://github.com/QuantStack/jupyterlab-drawio
+## jupyterlab Spreadsheet - JupyterLab plugin for viewing spreadsheets, such as Excel and OpenOffice
+## @jupyter-widgets/jupyterlab-manager - A collection of helpers for Jupyter/IPython
+## jupyter-matplotlib - Matplotlib Jupyter Extension
+## @jupyterlab/dataregistry-extension - First class datasets in JupyterLab - It has an old version
+## Papermill - Parameterize, execute, and analyze notebooks  - https://github.com/nteract/papermill
+- name: Install JupyterLab Extensions
+  async: 10
+  poll: 0
+  shell: "/home/vagrant/venv/jupyterlab/bin/jupyter labextension install {{ item }} --no-build"
+  with_items:
+    ["@jupyter-widgets/jupyterlab-manager@2.0",
+    "@jupyterlab/debugger",
+    "@krassowski/jupyterlab-lsp",
+    "jupyterlab-spreadsheet",
+    "spreadsheet-editor",
+    "jupyterlab_commands",
+    "jupyterlab-execute-time",
+    "@bokeh/jupyter_bokeh",
+    "jupyter-threejs",
+    "@jupyter-voila/jupyterlab-preview",
+    "jupyterlab_powerpoint",
+    "jupyterlab_filetree",
+    "jupyterlab_templates",
+    "@lckr/jupyterlab_variableinspector",
+    "jupyterlab-system-monitor",
+    "jupyterlab-topbar-extension",
+    "@ijmbarr/jupyterlab_spellchecker",
+    "@aquirdturtle/collapsible_heading",
+    "@jupyterlab/toc",
+    "jupyter-matplotlib",
+    "jupyterlab-drawio",
+    "@jupyterlab/dataregistry-extension",
+    "@ryantam626/jupyterlab_code_formatter",
+    "@jupyterlab/celltags",
+    "@krassowski/jupyterlab_go_to_definition",
+    "@agoose77/jupyterlab-markup",
+    "@finos/perspective-jupyterlab",
+    "ipytree",
+    "ipysheet",
+    "jupyterlab_tensorboard",
+    "jupyterlab-cell-flash",
+    "jupyterlab-flake8",
+    "jupyterlab-theme-solarized-dark",
+    "@deathbeds/jupyterlab-fonts",
+    "@deathbeds/jupyterlab-font-anonymous-pro",
+    "@deathbeds/jupyterlab-font-dejavu-sans-mono",
+    "@deathbeds/jupyterlab-font-fira-code",
+    "mind-map"
+    ]
+  args:
+  # chdir: "/home/vagrant/venv/jupyterlab/bin/"
+    executable: /bin/bash
+  tags: ["jupyter","machinelearning"]
+
+## Register nbextensions_configurator
+- name: Enabling nbextensions_configurator
+  async: 10
+  poll: 0
+  shell: /home/vagrant/venv/jupyterlab/bin/jupyter nbextensions_configurator enable --user
+  args:
+    executable: /bin/bash
+  # chdir: "/home/vagrant/venv/jupyterlab/bin/"
+  tags: ["jupyter","machinelearning"]
+
+## Enable and configure Jupyterlab extensions
+# can be skipped for notebook version 5.3 and above
+- name: Enabling nbextension
+  async: 10
+  poll: 0
+  shell: /home/vagrant/venv/jupyterlab/bin/jupyter nbextension enable --py --sys-prefix widgetsnbextension
+  args:
+    executable: "/bin/bash"
+  # chdir: "/home/vagrant/venv/jupyterlab/bin/"
+  tags: ["jupyter","machinelearning"]
+
+## Enable and configure Jupyterlab extensions suchas
+## Register jupyterlab_templates
+## Register jupyterlab sql
+- name: Enabling jupyterlab extensions
+  async: 10
+  poll: 0
+  shell: "/home/vagrant/venv/jupyterlab/bin/jupyter serverextension enable --py {{ item }} --sys-prefix"
+  with_items:
+    ["jupyterlab_code_formatter",
+    "jupyterlab_templates",
+    "jupyterlab_commands",
+    "jupyterlab_powerpoint"]
+  args:
+    executable: "/bin/bash"
+  #  chdir: "/home/vagrant/venv/jupyterlab/bin/"
+  tags: ["jupyter","machinelearning"]
+
+- name: Recursively change ownership of Virtual Environment
+  file:
+    path: "/home/vagrant/venv/"
+    state: "directory"
+    recurse: yes
+    owner: "vagrant"
+    group: "vagrant"
+    mode: "0755"
+  become: true
+  tags: ["jupyter","machinelearning"]
+
+## Build lab widgets extensions
+- name: Build JupyterLab Extensions
+  async: 10
+  poll: 0
+  shell: /home/vagrant/venv/jupyterlab/bin/jupyter lab build --dev-build=False --minimize=False
+  args:
+    executable: /bin/bash
+  #  chdir: "/home/vagrant/venv/jupyterlab/bin/"
+  tags: ["jupyter","machinelearning"]
+
+## Update JupyterLab Extensions
+- name: Update all the JupyterLab Extensions
+  async: 10
+  poll: 0
+  shell: /home/vagrant/venv/jupyterlab/bin/jupyter labextension update --all
+  args:
+    executable: /bin/bash
+  #  chdir: "/home/vagrant/venv/jupyterlab/bin/"
+  tags: ["jupyter","machinelearning"]
+
+## List JupyterLab Extensions
+- name: List JupyterLab Extensions
+  shell: /home/vagrant/venv/jupyterlab/bin/jupyter labextension list
+  args:
+    executable: /bin/bash
+  register: jupyterLabList
+  tags: ["jupyter","machinelearning"]
+
+# Launch the JupyterLab server from the command-line.
+# - name: Start jupyterLab
+#   shell: /home/vagrant/venv/jupyterlab/bin/jupyter lab --no-browser --port=8888 --allow-root --ip=0.0.0.0 --no-browser --notebook-dir=~/data/notebooks
+#   register: jupyterstart
+#   args:
+#     executable: /bin/bash
+#   #  chdir: /home/vagrant/venv/jupyterlab/bin/
+#   tags: ["jupyter","machinelearning"]
+# - debug: var=jupyterstart.stdout_lines

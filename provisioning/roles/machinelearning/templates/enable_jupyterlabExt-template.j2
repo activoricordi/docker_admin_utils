@@ -1,0 +1,17 @@
+# Create Jupyter Service file
+# jupyter-service-file.j2
+
+[Unit]
+Description=Jupyter Lab
+[Service]
+Type=simple
+PIDFile=/run/jupyter.pid
+ExecStart=/home/$USER/.local/bin/jupyter-lab --config=/home/$USER/.jupyter/jupyter_notebook_config.py
+WorkingDirectory=$WorkingDirectory
+User=$USER
+Group=$USER
+Restart=always
+RestartSec=10
+#KillMode=mixed
+[Install]
+WantedBy=multi-user.target

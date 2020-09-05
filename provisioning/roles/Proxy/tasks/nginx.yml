@@ -1,0 +1,7 @@
+---
+## apt-get install -y nginx
+- name: Install nginx docker container
+
+## Create a dummy page at the atomic_container
+## echo 'Default page. Nginx is in your container. ' \ >/usr/share/nginx/html/index.html
+- name: Dummy page at container
