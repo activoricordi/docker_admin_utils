@@ -53,7 +53,7 @@ colorama==0.4.3
 configparser==5.0.0
 contractions==0.0.25
 cookiecutter==1.7.2
-cryptography==2.9.2
+cryptography==3.2
 csv2sqlite==0.3.0
 cycler==0.10.0
 cymem==2.0.3
