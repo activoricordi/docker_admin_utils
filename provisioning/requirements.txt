@@ -31,7 +31,7 @@ beautifulsoup4==4.9.1
 binaryornot==0.4.4
 biopython==1.77
 black==19.10b0
-bleach==3.1.5
+bleach==3.3.0
 blinker==1.4
 blis==0.4.1
 bokeh==2.0.2
