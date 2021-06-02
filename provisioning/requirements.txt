@@ -374,7 +374,7 @@ tzlocal==1.5.1
 uamqp==1.2.8
 ujson==3.0.0
 Unidecode==1.1.1
-urllib3==1.25.9
+urllib3==1.26.5
 vega-datasets==0.8.0
 voila==0.1.21
 votebase==0.3.2
